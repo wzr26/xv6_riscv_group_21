@@ -20,3 +20,14 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+#define SYS_hello  22
+#define SYS_kinfo  23
+#define SYS_start_anim 24
+#define SYS_stop_anim  25
+#define SYS_set_speed  26
+#define SYS_fb_write   27
+#define SYS_fb_clear   28
+
+
+
+

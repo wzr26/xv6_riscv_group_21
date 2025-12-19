@@ -1,30 +1,39 @@
+#ifndef RISCV_H
+#define RISCV_H
+
+#include "types.h"
+
+/*
+ * User-facing, C helper wrappers for RISC-V CSRs and instructions.
+ * Assembly uses the same names guarded by __ASSEMBLER__ where necessary.
+ */
+
 #ifndef __ASSEMBLER__
 
 // which hart (core) is this?
 static inline uint64
-r_mhartid()
+r_mhartid(void)
 {
   uint64 x;
-  asm volatile("csrr %0, mhartid" : "=r" (x) );
+  asm volatile("csrr %0, mhartid" : "=r" (x));
   return x;
 }
 
 // Machine Status Register, mstatus
-
 #define MSTATUS_MPP_MASK (3L << 11) // previous mode.
 #define MSTATUS_MPP_M (3L << 11)
 #define MSTATUS_MPP_S (1L << 11)
 #define MSTATUS_MPP_U (0L << 11)
 
 static inline uint64
-r_mstatus()
+r_mstatus(void)
 {
   uint64 x;
-  asm volatile("csrr %0, mstatus" : "=r" (x) );
+  asm volatile("csrr %0, mstatus" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_mstatus(uint64 x)
 {
   asm volatile("csrw mstatus, %0" : : "r" (x));
@@ -33,14 +42,13 @@ w_mstatus(uint64 x)
 // machine exception program counter, holds the
 // instruction address to which a return from
 // exception will go.
-static inline void 
+static inline void
 w_mepc(uint64 x)
 {
   asm volatile("csrw mepc, %0" : : "r" (x));
 }
 
 // Supervisor Status Register, sstatus
-
 #define SSTATUS_SPP (1L << 8)  // Previous mode, 1=Supervisor, 0=User
 #define SSTATUS_SPIE (1L << 5) // Supervisor Previous Interrupt Enable
 #define SSTATUS_UPIE (1L << 4) // User Previous Interrupt Enable
@@ -48,14 +56,14 @@ w_mepc(uint64 x)
 #define SSTATUS_UIE (1L << 0)  // User Interrupt Enable
 
 static inline uint64
-r_sstatus()
+r_sstatus(void)
 {
   uint64 x;
-  asm volatile("csrr %0, sstatus" : "=r" (x) );
+  asm volatile("csrr %0, sstatus" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_sstatus(uint64 x)
 {
   asm volatile("csrw sstatus, %0" : : "r" (x));
@@ -63,14 +71,14 @@ w_sstatus(uint64 x)
 
 // Supervisor Interrupt Pending
 static inline uint64
-r_sip()
+r_sip(void)
 {
   uint64 x;
-  asm volatile("csrr %0, sip" : "=r" (x) );
+  asm volatile("csrr %0, sip" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_sip(uint64 x)
 {
   asm volatile("csrw sip, %0" : : "r" (x));
@@ -79,15 +87,16 @@ w_sip(uint64 x)
 // Supervisor Interrupt Enable
 #define SIE_SEIE (1L << 9) // external
 #define SIE_STIE (1L << 5) // timer
+
 static inline uint64
-r_sie()
+r_sie(void)
 {
   uint64 x;
-  asm volatile("csrr %0, sie" : "=r" (x) );
+  asm volatile("csrr %0, sie" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_sie(uint64 x)
 {
   asm volatile("csrw sie, %0" : : "r" (x));
@@ -96,46 +105,44 @@ w_sie(uint64 x)
 // Machine-mode Interrupt Enable
 #define MIE_STIE (1L << 5)  // supervisor timer
 static inline uint64
-r_mie()
+r_mie(void)
 {
   uint64 x;
-  asm volatile("csrr %0, mie" : "=r" (x) );
+  asm volatile("csrr %0, mie" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_mie(uint64 x)
 {
   asm volatile("csrw mie, %0" : : "r" (x));
 }
 
-// supervisor exception program counter, holds the
-// instruction address to which a return from
-// exception will go.
-static inline void 
+// Supervisor exception program counter (sepc)
+static inline void
 w_sepc(uint64 x)
 {
   asm volatile("csrw sepc, %0" : : "r" (x));
 }
 
 static inline uint64
-r_sepc()
+r_sepc(void)
 {
   uint64 x;
-  asm volatile("csrr %0, sepc" : "=r" (x) );
+  asm volatile("csrr %0, sepc" : "=r" (x));
   return x;
 }
 
 // Machine Exception Delegation
 static inline uint64
-r_medeleg()
+r_medeleg(void)
 {
   uint64 x;
-  asm volatile("csrr %0, medeleg" : "=r" (x) );
+  asm volatile("csrr %0, medeleg" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_medeleg(uint64 x)
 {
   asm volatile("csrw medeleg, %0" : : "r" (x));
@@ -143,66 +150,63 @@ w_medeleg(uint64 x)
 
 // Machine Interrupt Delegation
 static inline uint64
-r_mideleg()
+r_mideleg(void)
 {
   uint64 x;
-  asm volatile("csrr %0, mideleg" : "=r" (x) );
+  asm volatile("csrr %0, mideleg" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_mideleg(uint64 x)
 {
   asm volatile("csrw mideleg, %0" : : "r" (x));
 }
 
-// Supervisor Trap-Vector Base Address
+// Supervisor Trap-Vector Base Address (stvec)
 // low two bits are mode.
-static inline void 
+static inline void
 w_stvec(uint64 x)
 {
   asm volatile("csrw stvec, %0" : : "r" (x));
 }
 
 static inline uint64
-r_stvec()
+r_stvec(void)
 {
   uint64 x;
-  asm volatile("csrr %0, stvec" : "=r" (x) );
+  asm volatile("csrr %0, stvec" : "=r" (x));
   return x;
 }
 
-// Supervisor Timer Comparison Register
+// Supervisor Timer Comparison Register (stimecmp)
+// Some implementations expose it via CSR index; keep the numeric form for compatibility.
 static inline uint64
-r_stimecmp()
+r_stimecmp(void)
 {
   uint64 x;
-  // asm volatile("csrr %0, stimecmp" : "=r" (x) );
-  asm volatile("csrr %0, 0x14d" : "=r" (x) );
+  asm volatile("csrr %0, 0x14d" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_stimecmp(uint64 x)
 {
-  // asm volatile("csrw stimecmp, %0" : : "r" (x));
   asm volatile("csrw 0x14d, %0" : : "r" (x));
 }
 
-// Machine Environment Configuration Register
+// Machine Environment Configuration Register (menvcfg)
 static inline uint64
-r_menvcfg()
+r_menvcfg(void)
 {
   uint64 x;
-  // asm volatile("csrr %0, menvcfg" : "=r" (x) );
-  asm volatile("csrr %0, 0x30a" : "=r" (x) );
+  asm volatile("csrr %0, 0x30a" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_menvcfg(uint64 x)
 {
-  // asm volatile("csrw menvcfg, %0" : : "r" (x));
   asm volatile("csrw 0x30a, %0" : : "r" (x));
 }
 
@@ -219,162 +223,154 @@ w_pmpaddr0(uint64 x)
   asm volatile("csrw pmpaddr0, %0" : : "r" (x));
 }
 
-// use riscv's sv39 page table scheme.
+// SATP helpers
 #define SATP_SV39 (8L << 60)
+#define MAKE_SATP(pagetable) (SATP_SV39 | (((uint64)(pagetable)) >> 12))
 
-#define MAKE_SATP(pagetable) (SATP_SV39 | (((uint64)pagetable) >> 12))
-
-// supervisor address translation and protection;
-// holds the address of the page table.
-static inline void 
+static inline void
 w_satp(uint64 x)
 {
   asm volatile("csrw satp, %0" : : "r" (x));
 }
 
 static inline uint64
-r_satp()
+r_satp(void)
 {
   uint64 x;
-  asm volatile("csrr %0, satp" : "=r" (x) );
+  asm volatile("csrr %0, satp" : "=r" (x));
   return x;
 }
 
-// Supervisor Trap Cause
+// Trap cause / trap value
 static inline uint64
-r_scause()
+r_scause(void)
 {
   uint64 x;
-  asm volatile("csrr %0, scause" : "=r" (x) );
+  asm volatile("csrr %0, scause" : "=r" (x));
   return x;
 }
 
-// Supervisor Trap Value
 static inline uint64
-r_stval()
+r_stval(void)
 {
   uint64 x;
-  asm volatile("csrr %0, stval" : "=r" (x) );
+  asm volatile("csrr %0, stval" : "=r" (x));
   return x;
 }
 
-// Machine-mode Counter-Enable
-static inline void 
+// Machine-mode counter-enable
+static inline void
 w_mcounteren(uint64 x)
 {
   asm volatile("csrw mcounteren, %0" : : "r" (x));
 }
 
 static inline uint64
-r_mcounteren()
+r_mcounteren(void)
 {
   uint64 x;
-  asm volatile("csrr %0, mcounteren" : "=r" (x) );
+  asm volatile("csrr %0, mcounteren" : "=r" (x));
   return x;
 }
 
-// machine-mode cycle counter
+// Time CSR (cycle/time)
 static inline uint64
-r_time()
+r_time(void)
 {
   uint64 x;
-  asm volatile("csrr %0, time" : "=r" (x) );
+  asm volatile("csrr %0, time" : "=r" (x));
   return x;
 }
 
-// enable device interrupts
+// Interrupt helpers
 static inline void
-intr_on()
+intr_on(void)
 {
   w_sstatus(r_sstatus() | SSTATUS_SIE);
 }
 
-// disable device interrupts
 static inline void
-intr_off()
+intr_off(void)
 {
   w_sstatus(r_sstatus() & ~SSTATUS_SIE);
 }
 
-// are device interrupts enabled?
 static inline int
-intr_get()
+intr_get(void)
 {
   uint64 x = r_sstatus();
   return (x & SSTATUS_SIE) != 0;
 }
 
+// Read registers
 static inline uint64
-r_sp()
+r_sp(void)
 {
   uint64 x;
-  asm volatile("mv %0, sp" : "=r" (x) );
+  asm volatile("mv %0, sp" : "=r" (x));
   return x;
 }
 
-// read and write tp, the thread pointer, which xv6 uses to hold
-// this core's hartid (core number), the index into cpus[].
 static inline uint64
-r_tp()
+r_tp(void)
 {
   uint64 x;
-  asm volatile("mv %0, tp" : "=r" (x) );
+  asm volatile("mv %0, tp" : "=r" (x));
   return x;
 }
 
-static inline void 
+static inline void
 w_tp(uint64 x)
 {
   asm volatile("mv tp, %0" : : "r" (x));
 }
 
 static inline uint64
-r_ra()
+r_ra(void)
 {
   uint64 x;
-  asm volatile("mv %0, ra" : "=r" (x) );
+  asm volatile("mv %0, ra" : "=r" (x));
   return x;
 }
 
 // flush the TLB.
 static inline void
-sfence_vma()
+sfence_vma(void)
 {
-  // the zero, zero means flush all TLB entries.
   asm volatile("sfence.vma zero, zero");
 }
 
+/* page-table types used in vm layer */
 typedef uint64 pte_t;
 typedef uint64 *pagetable_t; // 512 PTEs
 
-#endif // __ASSEMBLER__
+#endif /* __ASSEMBLER__ */
 
-#define PGSIZE 4096 // bytes per page
-#define PGSHIFT 12  // bits of offset within a page
+/* Page and PTE definitions (usable from assembler and C) */
+#define PGSIZE 4096           // bytes per page
+#define PGSHIFT 12            // bits of offset within a page
 
-#define PGROUNDUP(sz)  (((sz)+PGSIZE-1) & ~(PGSIZE-1))
+#define PGROUNDUP(sz)  (((sz) + PGSIZE - 1) & ~(PGSIZE-1))
 #define PGROUNDDOWN(a) (((a)) & ~(PGSIZE-1))
 
 #define PTE_V (1L << 0) // valid
 #define PTE_R (1L << 1)
 #define PTE_W (1L << 2)
 #define PTE_X (1L << 3)
-#define PTE_U (1L << 4) // user can access
+#define PTE_U (1L << 4) // user accessible
 
 // shift a physical address to the right place for a PTE.
-#define PA2PTE(pa) ((((uint64)pa) >> 12) << 10)
-
+#define PA2PTE(pa) ((((uint64)(pa)) >> 12) << 10)
 #define PTE2PA(pte) (((pte) >> 10) << 12)
-
 #define PTE_FLAGS(pte) ((pte) & 0x3FF)
 
 // extract the three 9-bit page table indices from a virtual address.
 #define PXMASK          0x1FF // 9 bits
-#define PXSHIFT(level)  (PGSHIFT+(9*(level)))
+#define PXSHIFT(level)  (PGSHIFT + (9*(level)))
 #define PX(level, va) ((((uint64) (va)) >> PXSHIFT(level)) & PXMASK)
 
 // one beyond the highest possible virtual address.
-// MAXVA is actually one bit less than the max allowed by
-// Sv39, to avoid having to sign-extend virtual addresses
-// that have the high bit set.
 #define MAXVA (1L << (9 + 9 + 9 + 12 - 1))
+
+#endif /* RISCV_H */
+

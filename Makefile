@@ -28,8 +28,11 @@ OBJS = \
   $K/sysfile.o \
   $K/kernelvec.o \
   $K/plic.o \
-  $K/virtio_disk.o
-
+  $K/virtio_disk.o \
+  $K/animation.o \
+  $K/fb.o \
+  $K/devfb.o \
+  $K/debug_graph.o \
 # riscv64-unknown-elf- or riscv64-linux-gnu-
 # perhaps in /opt/riscv/bin
 #TOOLPREFIX = 
@@ -69,7 +72,6 @@ CFLAGS += -fno-builtin-memmove -fno-builtin-memcmp -fno-builtin-log -fno-builtin
 CFLAGS += -fno-builtin-strchr -fno-builtin-exit -fno-builtin-malloc -fno-builtin-putc
 CFLAGS += -fno-builtin-free
 CFLAGS += -fno-builtin-memcpy -Wno-main
-CFLAGS += -fno-builtin-printf -fno-builtin-fprintf -fno-builtin-vprintf
 CFLAGS += -I.
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 
@@ -113,6 +115,11 @@ $U/_forktest: $U/forktest.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $U/_forktest $U/forktest.o $U/ulib.o $U/usys.o
 	$(OBJDUMP) -S $U/_forktest > $U/forktest.asm
 
+# fbviewer needs to link with libfb (Week 5)
+$U/_fbviewer: $U/fbviewer.o $U/libfb.o $(ULIB)
+	$(LD) $(LDFLAGS) -T $U/user.ld -o $U/_fbviewer $U/fbviewer.o $U/libfb.o $(ULIB)
+	$(OBJDUMP) -S $U/_fbviewer > $U/fbviewer.asm
+
 mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 	gcc -Wno-unknown-attributes -I. -o mkfs/mkfs mkfs/mkfs.c
 
@@ -142,6 +149,13 @@ UPROGS=\
 	$U/_logstress\
 	$U/_forphan\
 	$U/_dorphan\
+	$U/_kinfo\
+	$U/_hello\
+	$U/_animctl\
+	$U/_fbtest\
+	$U/_drawdemo\
+	$U/_animtest\
+	$U/_fbviewer\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

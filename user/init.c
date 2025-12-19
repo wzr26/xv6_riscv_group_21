@@ -20,8 +20,25 @@ main(void)
     mknod("console", CONSOLE, 0);
     open("console", O_RDWR);
   }
+  // Ensure framebuffer device node exists for demos (/dev/fb -> major 2)
+  // Create /dev directory if necessary, then create device node
+  mkdir("/dev");
+  if (open("/dev/fb", O_RDWR) < 0) {
+    mknod("/dev/fb", 2, 0);
+  }
   dup(0);  // stdout
   dup(0);  // stderr
+
+  // Launch drawdemo in background for automated demo captures.
+  // This is optional and intended for automated test runs.
+  if (fork() == 0) {
+    char *dargs[] = { "drawdemo", 0 };
+    exec("drawdemo", dargs);
+    // if exec fails, child should exit
+    exit(0);
+  }
+  // Enable animation ticks so the kernel prints the ASCII preview
+  start_anim();
 
   for(;;){
     printf("init: starting sh\n");

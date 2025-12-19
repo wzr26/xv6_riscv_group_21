@@ -1,0 +1,8 @@
+#include "kernel/types.h"
+#include "user.h"
+
+int main() {
+    debuggraph();    // syscall
+    exit(0);
+}
+

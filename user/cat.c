@@ -1,6 +1,5 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
 #include "user/user.h"
+#include "kernel/fcntl.h"
 
 char buf[512];
 
@@ -9,14 +8,15 @@ cat(int fd)
 {
   int n;
 
-  while((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
-      fprintf(2, "cat: write error\n");
+  while((n = read(fd, buf, sizeof(buf))) > 0){
+    if(write(1, buf, n) != n){
+      printf("cat: write error\n");
       exit(1);
     }
   }
+
   if(n < 0){
-    fprintf(2, "cat: read error\n");
+    printf("cat: read error\n");
     exit(1);
   }
 }
@@ -33,11 +33,13 @@ main(int argc, char *argv[])
 
   for(i = 1; i < argc; i++){
     if((fd = open(argv[i], O_RDONLY)) < 0){
-      fprintf(2, "cat: cannot open %s\n", argv[i]);
+      printf("cat: cannot open %s\n", argv[i]);
       exit(1);
     }
     cat(fd);
     close(fd);
   }
+
   exit(0);
 }
+

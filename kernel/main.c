@@ -3,6 +3,10 @@
 #include "memlayout.h"
 #include "riscv.h"
 #include "defs.h"
+#include "animation.h"
+
+// framebuffer device registration (defined in devfb.c)
+extern void fbdev_register(void);
 
 volatile static int started = 0;
 
@@ -24,6 +28,9 @@ main()
     trapinithart();  // install kernel trap vector
     plicinit();      // set up interrupt controller
     plicinithart();  // ask PLIC for device interrupts
+    // initialize animation and framebuffer device
+    animation_init();
+    fbdev_register();
     binit();         // buffer cache
     iinit();         // inode table
     fileinit();      // file table
