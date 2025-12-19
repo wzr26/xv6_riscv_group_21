@@ -8,59 +8,43 @@
 #include "defs.h"
 #include "fb.h"
 
-// Forward buffer for display (Week 5)
-static uint32 fb_front[FB_WIDTH * FB_HEIGHT];
+// Local framebuffer stored inside kernel as a flat buffer (single buffer for stability)
+static uint32 fb_mem[FB_WIDTH * FB_HEIGHT];
 
-// Back buffer for rendering (Week 5 - double-buffering)
-static uint32 fb_back[FB_WIDTH * FB_HEIGHT];
-
-// Current buffer pointer (double-buffering) (Week 5)
-static uint32 *fb_current;
-
-// Exported pointer and size so /dev/fb can reference the framebuffer (points to front)
-uint32 *fb = fb_front;
+// Exported pointer and size so /dev/fb can reference the framebuffer
+uint32 *fb = fb_mem;
 int fb_size_bytes = FB_WIDTH * FB_HEIGHT * sizeof(uint32);
 
 void 
 fb_init(void) 
 {
-    // Initialize both buffers
-    fb_current = fb_back;  // render to back buffer
     fb_clear(0x000000);
-    fb_swap_buffers();     // swap to make front visible
 }
 
-// Swap front and back buffers for double-buffering (Week 5)
+// Swap buffers (placeholder for Week 5 - future optimization)
 void 
 fb_swap_buffers(void)
 {
-    // Copy back buffer to front buffer using fast memcpy
-    // This reduces tearing by ensuring atomic updates
-    for(int i = 0; i < FB_WIDTH * FB_HEIGHT; i++) {
-        fb_front[i] = fb_back[i];
-    }
-    // Keep rendering to back buffer
-    fb_current = fb_back;
+    // Currently a no-op since we're using single buffer for stability
+    // Can be optimized with double-buffering in future kernel versions
 }
 
 void 
 fb_clear(uint32 color) 
 {
     // Optimized clear with unrolled loops (Week 4)
-    // Clear using back buffer
-    uint32 *buf = fb_back;
     int size = FB_WIDTH * FB_HEIGHT;
     
     // Unroll loop for faster clearing
     for(int i = 0; i < size; i += 4) {
-        buf[i]     = color;
-        buf[i+1]   = color;
-        buf[i+2]   = color;
-        buf[i+3]   = color;
+        fb_mem[i]     = color;
+        fb_mem[i+1]   = color;
+        fb_mem[i+2]   = color;
+        fb_mem[i+3]   = color;
     }
     // Handle remainder
     for(int i = (size / 4) * 4; i < size; i++) {
-        buf[i] = color;
+        fb_mem[i] = color;
     }
 }
 
@@ -74,7 +58,7 @@ void
 fb_draw_pixel(int x, int y, uint32 color) 
 {
     if(!in_bounds(x, y)) return;
-    fb_back[y * FB_WIDTH + x] = color;
+    fb_mem[y * FB_WIDTH + x] = color;
 }
 
 void 
@@ -91,9 +75,12 @@ fb_draw_rect(int x, int y, int w, int h, uint32 color)
 void 
 fb_flush_region(int x, int y, int w, int h)
 {
-    // For now, this just swaps the whole buffer
-    // Could be optimized for partial updates in the future
-    fb_swap_buffers();
+    // For now, this is a no-op for stability
+    // Can be optimized for partial updates in future versions
+    (void)x;
+    (void)y;
+    (void)w;
+    (void)h;
 }
 
 int 
@@ -113,7 +100,7 @@ fb_test_pattern(void)
 {
     for(int y = 0; y < FB_HEIGHT; y++) {
         for(int x = 0; x < FB_WIDTH; x++) {
-            fb_back[y * FB_WIDTH + x] = (x * 5) ^ (y * 7);
+            fb_mem[y * FB_WIDTH + x] = (x * 5) ^ (y * 7);
         }
     }
 }
@@ -262,7 +249,7 @@ fb_print_ascii_now(void)
         for (int rx = 0; rx < sw; rx++) {
             int x = rx * sx;
             int y = ry * sy;
-            uint32 c = fb_front[y * FB_WIDTH + x];
+            uint32 c = fb_mem[y * FB_WIDTH + x];
             // extract RGB and compute simple luminance
             int r = (c >> 16) & 0xff;
             int g = (c >> 8) & 0xff;
