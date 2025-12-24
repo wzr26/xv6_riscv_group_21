@@ -12,9 +12,9 @@
 
 // Legacy single-object state (backward compatibility)
 static int x = 0;
-static int y = 20;
-static int dx = 2;
-static int w = 12, h = 6;
+static int y = 50;
+static int dx = 3;
+static int w = 20, h = 12;
 static int prev_x = 0;
 static int prev_y = 20;
 static int frame_no = 0;
