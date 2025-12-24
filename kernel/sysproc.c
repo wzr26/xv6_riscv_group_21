@@ -80,16 +80,6 @@ sys_view_anim(void)
 }
 
 // ====================================================
-// syscall: get_anim_state()
-// Returns: 1 if animation is enabled, 0 if disabled
-// ====================================================
-uint64
-sys_get_anim_state(void)
-{
-  return animation_enabled;
-}
-
-// ====================================================
 // syscall: fb_write(int x, int y, uint32 color)
 // ====================================================
 uint64

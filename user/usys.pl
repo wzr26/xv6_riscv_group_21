@@ -49,7 +49,6 @@ entry("start_anim");
 entry("stop_anim");
 entry("set_speed");
 entry("view_anim");
-entry("get_anim_state");
 entry("fb_write");
 entry("fb_clear");
 

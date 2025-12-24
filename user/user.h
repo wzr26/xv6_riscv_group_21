@@ -71,7 +71,6 @@ int start_anim(void);
 int stop_anim(void);
 int set_speed(int n);
 int view_anim(void);
-int get_anim_state(void);
 // Framebuffer user APIs (week 3)
 int fb_write(int x, int y, uint32 color);
 int fb_clear(uint32 color);

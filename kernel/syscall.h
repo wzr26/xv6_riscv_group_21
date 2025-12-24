@@ -26,9 +26,8 @@
 #define SYS_stop_anim  25
 #define SYS_set_speed  26
 #define SYS_view_anim  27
-#define SYS_get_anim_state 28
-#define SYS_fb_write   29
-#define SYS_fb_clear   30
+#define SYS_fb_write   28
+#define SYS_fb_clear   29
 
 
 

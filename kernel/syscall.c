@@ -98,7 +98,6 @@ extern uint64 sys_start_anim(void);
 extern uint64 sys_stop_anim(void);
 extern uint64 sys_set_speed(void);
 extern uint64 sys_view_anim(void);
-extern uint64 sys_get_anim_state(void);
 extern uint64 sys_fb_write(void);
 extern uint64 sys_fb_clear(void);
 
@@ -133,7 +132,6 @@ static uint64 (*syscalls[])(void) = {
   [SYS_stop_anim]  = sys_stop_anim,
   [SYS_set_speed]  = sys_set_speed,
   [SYS_view_anim]  = sys_view_anim,
-  [SYS_get_anim_state] = sys_get_anim_state,
   [SYS_fb_write]   = sys_fb_write,
   [SYS_fb_clear]   = sys_fb_clear,
 };
