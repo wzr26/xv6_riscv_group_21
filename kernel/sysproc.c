@@ -73,6 +73,17 @@ sys_set_speed(void)
 }
 
 // ====================================================
+// syscall: view_anim()
+// ====================================================
+uint64
+sys_view_anim(void)
+{
+  // Print current framebuffer state as ASCII preview
+  fb_print_ascii_preview();
+  return 0;
+}
+
+// ====================================================
 // syscall: fb_write(int x, int y, uint32 color)
 // ====================================================
 uint64

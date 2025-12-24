@@ -32,6 +32,9 @@ void fb_test_pattern(void);
 // Called periodically to make animation visible on the text console.
 void fb_print_ascii_if_needed(void);
 
+// Print ASCII preview on demand (called via syscall)
+void fb_print_ascii_preview(void);
+
 // Additional drawing primitives (Week 3)
 void fb_draw_line(int x0, int y0, int x1, int y1, uint32 color);
 void fb_draw_box(int x, int y, int w, int h, uint32 color);

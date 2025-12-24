@@ -37,8 +37,8 @@ main(void)
     // if exec fails, child should exit
     exit(0);
   }
-  // Enable animation ticks so the kernel prints the ASCII preview
-  start_anim();
+  // Animation will be started manually via 'animctl start' command
+  // start_anim();
 
   for(;;){
     printf("init: starting sh\n");

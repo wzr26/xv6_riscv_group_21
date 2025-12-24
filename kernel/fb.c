@@ -7,6 +7,7 @@
 #include "vm.h"         // <-- MUST be included before defs.h
 #include "defs.h"
 #include "fb.h"
+#include "animation.h"
 
 // Local framebuffer stored inside kernel as a flat buffer (single buffer for stability)
 static uint32 fb_mem[FB_WIDTH * FB_HEIGHT];
@@ -229,10 +230,8 @@ fb_rle_decompress(const uint8 *src, uint32 *dst, int max_pixels)
     return count;
 }
 
-// ASCII preview support (Week 4) ----
+// ASCII preview support (Week 4) - On-demand printing via syscall
 
-static int ascii_interval = 10;  // frames between prints
-static int ascii_counter = 0;
 static char const *ascii_map = " .:-=+*#%@";
 
 static void
@@ -266,9 +265,16 @@ fb_print_ascii_now(void)
 void 
 fb_print_ascii_if_needed(void)
 {
-    ascii_counter++;
-    if (ascii_counter % ascii_interval != 0)
-        return;
+    // ASCII preview disabled for cleaner terminal output
+    // Animation still runs in background, just no console visualization
+}
+
+// Print ASCII preview on demand (called via syscall)
+void
+fb_print_ascii_preview(void)
+{
+    // Note: No lock needed here - framebuffer is read-only during preview
+    // Animation updates are protected by spinlock in animation.c
     fb_print_ascii_now();
 }
 

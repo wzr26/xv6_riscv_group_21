@@ -79,8 +79,8 @@ erase_previous(void)
 void
 animation_update(void)
 {
-    acquire(&anim_lock);
-
+    // Note: Called from timer interrupt context (interrupts disabled)
+    // No lock needed - interrupt-safe by design
     frame_no++;
     prev_x = x;
     prev_y = y;
@@ -97,8 +97,6 @@ animation_update(void)
         dx = -dx;
         x += dx;
     }
-
-    release(&anim_lock);
 }
 
 // Update all active objects (Week 5)
@@ -113,15 +111,14 @@ anim_update_all(void)
 void
 draw_next_frame(void)
 {
-    acquire(&anim_lock);
-
+    // Note: Called from timer interrupt context (interrupts disabled)
+    // No lock needed - interrupt-safe by design
+    
     // Legacy single-object rendering mode
     erase_previous();
     fb_draw_rect(x, y, w, h, 0xff2020);  // soft red tone
     
     // Print lightweight ASCII preview (Week 4 - low frequency)
     fb_print_ascii_if_needed();
-
-    release(&anim_lock);
 }
 
