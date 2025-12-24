@@ -30,17 +30,12 @@ main(int argc, char *argv[])
       printf("animctl: speed set to %d\n", s);
     }
   } else if (strcmp(argv[1], "view") == 0) {
-    printf("animctl: entering view mode (continuous frame display)\n");
-    printf("(Run 'animctl stop' in another terminal to exit)\n\n");
-    
-    // Continuous view mode - refresh every ~10ms and check if animation is still enabled
+    printf("animctl view: Press Ctrl+C to exit\n\n");
+    // Continuous view mode - exits when animation is disabled
     while (get_anim_state()) {
       view_anim();
-      printf("\n");  // Separate frames with newline
-      // Pause for ~10ms (100 ticks ~ 10ms)
       pause(100);
     }
-    printf("\n[animctl] Animation stopped, exiting view mode\n");
   } else {
     printf("animctl: unknown command\n");
   }
