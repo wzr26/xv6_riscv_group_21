@@ -25,10 +25,8 @@ int anim_ticks_per_frame = 10;
 uint64
 sys_start_anim(void)
 {
-  // Protect animation state change with the animation lock to avoid races
-  acquire(&anim_lock);
+  // Simple flag write - no lock needed
   animation_enabled = 1;
-  release(&anim_lock);
   printf("[kernel] Animation started.\n");
   return 0;
 }
@@ -39,9 +37,8 @@ sys_start_anim(void)
 uint64
 sys_stop_anim(void)
 {
-  acquire(&anim_lock);
+  // Simple flag write - no lock needed
   animation_enabled = 0;
-  release(&anim_lock);
   printf("[kernel] Animation stopped.\n");
   return 0;
 }
@@ -65,9 +62,8 @@ sys_set_speed(void)
     speed = 1000000;
   }
 
-  acquire(&anim_lock);
+  // Simple flag write - no lock needed
   anim_ticks_per_frame = speed;
-  release(&anim_lock);
   printf("[kernel] Animation speed set to %d ticks/frame.\n", anim_ticks_per_frame);
   return 0;
 }
@@ -81,6 +77,16 @@ sys_view_anim(void)
   // Print current framebuffer state as ASCII preview
   fb_print_ascii_preview();
   return 0;
+}
+
+// ====================================================
+// syscall: get_anim_state()
+// Returns: 1 if animation is enabled, 0 if disabled
+// ====================================================
+uint64
+sys_get_anim_state(void)
+{
+  return animation_enabled;
 }
 
 // ====================================================
