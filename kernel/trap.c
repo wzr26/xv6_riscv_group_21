@@ -40,11 +40,6 @@ anim_tick(void)
   animation_update();
   draw_next_frame();
 
-  // OPTIONAL RATE-LIMITED DEBUG LOGGING
-  static int dbg = 0;
-  if ((dbg++ % 50) == 0)
-    printf("[anim] frame updated (ticks=%d)\n", ticks);
-
   // OPTIONAL sample profiling (only records values)
   dbg_record(anim_tick_counter);
 }
