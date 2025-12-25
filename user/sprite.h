@@ -1,5 +1,5 @@
 // user/sprite.h
-// Sprite format and structures for animation (Week 5)
+// Sprite format and structures for animation
 
 #ifndef SPRITE_H
 #define SPRITE_H

@@ -1,5 +1,5 @@
 // user/libfb.h
-// User-space framebuffer graphics library (Week 5)
+// User-space framebuffer graphics library
 
 #ifndef LIBFB_H
 #define LIBFB_H

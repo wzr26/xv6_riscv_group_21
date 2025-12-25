@@ -33,7 +33,7 @@ fb_swap_buffers(void)
 void 
 fb_clear(uint32 color) 
 {
-    // Optimized clear with unrolled loops (Week 4)
+    // Optimized clear
     int size = FB_WIDTH * FB_HEIGHT;
     
     // Unroll loop for faster clearing
@@ -72,7 +72,7 @@ fb_draw_rect(int x, int y, int w, int h, uint32 color)
     }
 }
 
-// Flush a specific region to display (Week 4)
+// Flush a specific region to display
 void 
 fb_flush_region(int x, int y, int w, int h)
 {
@@ -230,7 +230,7 @@ fb_rle_decompress(const uint8 *src, uint32 *dst, int max_pixels)
     return count;
 }
 
-// ASCII preview support (Week 4) - On-demand printing via syscall
+// ASCII preview support - on-demand printing
 
 static char const *ascii_map = " .:-=+*#%@";
 

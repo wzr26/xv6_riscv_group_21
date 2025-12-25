@@ -1,5 +1,5 @@
 // user/libfb.c
-// User-space framebuffer graphics library implementation (Week 5)
+// User-space framebuffer graphics library
 
 #include "user.h"
 #include "libfb.h"

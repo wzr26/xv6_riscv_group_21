@@ -1,5 +1,5 @@
 // user/fbviewer.c
-// User-space framebuffer viewer and graphics demo application (Week 5)
+// User-space framebuffer viewer and graphics demo
 
 #include "user.h"
 #include "libfb.h"
@@ -78,7 +78,7 @@ draw_test_pattern(void)
 int
 main(int argc, char *argv[])
 {
-    printf("fbviewer: Framebuffer Graphics Viewer (Week 5)\n");
+    printf("fbviewer: Framebuffer Graphics Viewer\n");
     
     libfb_init();
     

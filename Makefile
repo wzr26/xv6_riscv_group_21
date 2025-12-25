@@ -115,7 +115,7 @@ $U/_forktest: $U/forktest.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $U/_forktest $U/forktest.o $U/ulib.o $U/usys.o
 	$(OBJDUMP) -S $U/_forktest > $U/forktest.asm
 
-# fbviewer needs to link with libfb (Week 5)
+# fbviewer needs to link with libfb
 $U/_fbviewer: $U/fbviewer.o $U/libfb.o $(ULIB)
 	$(LD) $(LDFLAGS) -T $U/user.ld -o $U/_fbviewer $U/fbviewer.o $U/libfb.o $(ULIB)
 	$(OBJDUMP) -S $U/_fbviewer > $U/fbviewer.asm
