@@ -13,7 +13,7 @@
 // Animation state
 static int x = 0;
 static int y = 50;
-static int dx = 3;
+static int dx = 1;
 static int w = 20, h = 12;
 static int prev_x = 0;
 static int prev_y = 50;
@@ -29,7 +29,7 @@ animation_init(void)
     
     // Initialize frame pacing state
     anim_frame_state.last_tick = 0;
-    anim_frame_state.target_ticks = 3;
+    anim_frame_state.target_ticks = 1;
     anim_frame_state.frame_count = 0;
     anim_frame_state.delta_time = 0;
 }
@@ -52,7 +52,7 @@ animation_update(void)
 
     // Handle speed = 0 edge case
     if(anim_ticks_per_frame <= 0) {
-        anim_ticks_per_frame = 3;
+        anim_ticks_per_frame = 1;
     }
 
     if (x < 0 || x + w >= fb_width()) {
