@@ -91,10 +91,7 @@ sys_fb_write(void)
   argint(1, &y);
   argint(2, &color);
 
-  // protect framebuffer operations against concurrent animation updates
-  acquire(&anim_lock);
   fb_draw_pixel(x, y, (uint32)color);
-  release(&anim_lock);
 
   return 0;
 }
@@ -108,9 +105,7 @@ sys_fb_clear(void)
   int color;
   argint(0, &color);
 
-  acquire(&anim_lock);
   fb_clear((uint32)color);
-  release(&anim_lock);
 
   return 0;
 }
